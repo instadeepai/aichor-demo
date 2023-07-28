@@ -1,0 +1,39 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  dockerfile: ./dockerfiles/ray.Dockerfile
+  context: .
+
+spec:
+  operator: ray
+  image: image
+  command: "python3 -u main.py --operator=ray --sleep=300 --tb-write=True"
+
+  debug:
+    jupyter: false
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Head:
+      resources:
+        cpus: 1
+        ramRatio: 2
+
+    Job:
+      resources:
+        cpus: 1
+        ramRatio: 2
+        shmSizeGB: 0
+
+    Workers:
+      - name: cpu-workers
+        count: 1
+        resources:
+          cpus: 1
+          ramRatio: 2
+          shmSizeGB: 0
+
