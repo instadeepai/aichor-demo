@@ -1,22 +1,22 @@
 # If you intend to try this demo project on AIchor, please fork it
 
-# Smoke test with any Operator
+# Gwt started with AIchor
 
-This is an AIchor demo project for test purpose
+This is an AIchor demo project
 
 ## Goal
 
-This project aims to replace `efficientnet`, `raytune` and `jax-demo` project for internal AIchor tests.
+This project aims to get up to speed with AIchor by going through the whole process, from setting up the VCS and project until running an experiment.
+
+
 Benefits:
 - Light and simple images to speedup the build phase.
 - Ability to test all operators within a single AIchor project (this repo).
 
-`Efficientnet`, `raytune` and `jax-demo` projects can take up to 40 minutes for the first build, which slows down the test process. With this `smoke-test-any-operator`, build time take 30 seconds for tf/jax and 80 seconds for ray.
-
 
 ## How to use it ?
 
-You can find multiple premade manifests in the `manifests` dir. If you want to try jax operator for example, all you need to do is to copy it:
+You can find multiple manifests samples in the `manifests` directory. If you want to try jax operator for example, all you need to do is to copy it:
 
 ```bash
 $ cp manifests/manifest.jax.sample.yaml manifest.yaml
@@ -33,7 +33,7 @@ $ git push
 
 ### Configuration
 
-The python script executed in the provides 3 configurable flags:
+The python script executed in the repository provides 3 configurable flags:
 
 ```bash
 > python main.py --help
