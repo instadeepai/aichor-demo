@@ -7,7 +7,7 @@ builder:
   context: .
 
 spec:
-  operator: ray
+  operator: kuberay
   image: image
   command: "python3 -u main.py --operator=ray --sleep=300 --tb-write=True"
 
@@ -22,12 +22,6 @@ spec:
       resources:
         cpus: 1
         ramRatio: 2
-
-    Job:
-      resources:
-        cpus: 1
-        ramRatio: 2
-        shmSizeGB: 0
 
     Workers:
       - name: cpu-workers
