@@ -7,8 +7,6 @@ from src.operators.tf import tfop
 from src.operators.pytorch import pytorchop
 from src.operators.xgboost import xgboostop
 
-from src.utils.tensorboard import dummy_tb_write
-
 OPERATOR_TABLE = {
     "ray": rayop,
     "kuberay": rayop,
@@ -27,11 +25,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     print(f"using {args.operator} operator")
-    OPERATOR_TABLE[args.operator]()
-    
-    if args.tb_write:
-        dummy_tb_write()
-    
+    OPERATOR_TABLE[args.operator](args.tb_write)
+
     if args.sleep > 0:
         print(f"sleeping for {args.sleep}s before exiting")
         time.sleep(args.sleep)
