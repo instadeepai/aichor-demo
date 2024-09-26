@@ -1,0 +1,40 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  dockerfile: ./build/Dockerfile
+  context: .
+
+spec:
+  operator: pytorch
+  image: image
+  command: "python3 -u main.py --operator=pytorch --sleep=300 --tb-write=True"
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Master:
+      count: 1
+      resources:
+        cpus: 1
+        ramRatio: 2
+        shmSizeGB: 0
+        accelerators: # optional
+          gpu:
+            count: 0
+            type: gpu
+            product: nvidia-tesla-t4
+    Worker:
+      count: 1
+      resources:
+        cpus: 1
+        ramRatio: 2
+        shmSizeGB: 0
+        accelerators: # optional
+          gpu:
+            count: 0
+            type: gpu
+            product: nvidia-tesla-t4
+
