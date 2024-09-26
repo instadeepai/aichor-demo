@@ -3,7 +3,7 @@ apiVersion: 0.2.2
 
 builder:
   image: image
-  dockerfile: ./dockerfiles/ray.Dockerfile
+  dockerfile: ./build/ray.Dockerfile
   context: .
 
 spec:
