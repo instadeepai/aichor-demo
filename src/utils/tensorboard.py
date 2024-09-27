@@ -1,21 +1,20 @@
 import os
+from tensorboardX import SummaryWriter
 
-def dummy_tb_write():
-    try:
-        from tensorboardX import SummaryWriter
-    except:
-        print("tensorboardX pkg not installed")
-        return
-    
+def dummy_tb_write(message: str):
     log_path = os.environ.get("AICHOR_LOGS_PATH")
     if log_path == None:
         print("\"AICHOR_LOGS_PATH\" env var not found")
         return
-    
-    writer = SummaryWriter(log_path)
-    message = os.environ.get("VCS_COMMIT_MESSAGE")
+
+    aichor_message = os.environ.get("AICHOR_EXPERIMENT_MESSAGE")
+
     if message == None:
-        message = "VCS_COMMIT_MESSAGE env var not found"
+        message = aichor_message
+    else:
+        message =  f"{message} - {aichor_message}"
+
+    writer = SummaryWriter(log_path)
     writer.add_text("testing text", message, 0)
     writer.flush()
     writer.close()

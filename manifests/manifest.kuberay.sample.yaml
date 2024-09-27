@@ -3,13 +3,13 @@ apiVersion: 0.2.2
 
 builder:
   image: image
-  dockerfile: ./dockerfiles/ray.Dockerfile
+  dockerfile: ./build/ray.Dockerfile
   context: .
 
 spec:
-  operator: ray
+  operator: kuberay
   image: image
-  command: "python3 -u main.py --operator=ray --sleep=300 --tb-write=True"
+  command: "python3 -u main.py --operator=kuberay --sleep=300 --tb-write=True"
 
   debug:
     jupyter: false
@@ -22,12 +22,6 @@ spec:
       resources:
         cpus: 1
         ramRatio: 2
-
-    Job:
-      resources:
-        cpus: 1
-        ramRatio: 2
-        shmSizeGB: 0
 
     Workers:
       - name: cpu-workers
