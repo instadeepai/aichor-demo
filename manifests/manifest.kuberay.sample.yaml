@@ -11,6 +11,12 @@ spec:
   image: image
   command: "python3 -u main.py --operator=kuberay --sleep=300 --tb-write=True"
 
+  storage:
+    sharedVolume:
+      mountPoint: "/mnt/shared"
+      sizeGB: 16
+      storageClass: longhorn-xfs
+
   debug:
     jupyter: false
 
@@ -30,4 +36,3 @@ spec:
           cpus: 1
           ramRatio: 2
           shmSizeGB: 0
-
