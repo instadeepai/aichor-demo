@@ -12,11 +12,11 @@ spec:
   command: "python3 -u main.py --operator=xgboost --sleep=300 --tb-write=True"
 
   #Optional
-  storage:
-    sharedVolume:
-      mountPoint: "/mnt/shared"
-      sizeGB: 16
-      storageClass: longhorn-xfs
+  # storage:
+  #   sharedVolume:
+  #     mountPoint: "/mnt/shared"
+  #     sizeGB: 16
+  #     storageClass: longhorn-xfs
 
   tensorboard:
     enabled: true
