@@ -11,6 +11,14 @@ spec:
   image: image
   command: "python3 -u main.py --operator=xgboost --sleep=300 --tb-write=True"
 
+  #Optional
+  # storage:
+  #   sharedVolume:
+  #     mountPoint: "/mnt/shared"
+  #     sizeGB: 16
+  #     storageClass: longhorn-xfs
+  #     accessMode: string  # ReadWriteOnce / ReadWriteOncePod / ReadOnlyMany / ReadWriteMany
+
   tensorboard:
     enabled: true
 
