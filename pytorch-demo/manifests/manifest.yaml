@@ -3,13 +3,13 @@ apiVersion: 0.2.2
 
 builder:
   image: image
-  dockerfile: ./build/Dockerfile
-  context: .
+  context: pytorch-demo
+  dockerfile: ./Dockerfile
 
 spec:
   operator: pytorch
   image: image
-  command: "python3 -u main.py --operator=pytorch --sleep=300 --tb-write=True"
+  command: "python3 src/main.py"
 
   tensorboard:
     enabled: true
@@ -18,23 +18,23 @@ spec:
     Master:
       count: 1
       resources:
-        cpus: 1
-        ramRatio: 2
+        cpus: 4
+        ramRatio: 3
         shmSizeGB: 0
         accelerators: # optional
           gpu:
-            count: 0
+            count: 1
             type: gpu
-            product: nvidia-tesla-t4
+            product: NVIDIA-A100-SXM4-80GB-MIG-3g.40gb
     Worker:
-      count: 1
+      count: 2
       resources:
-        cpus: 1
-        ramRatio: 2
+        cpus: 4
+        ramRatio: 4
         shmSizeGB: 0
         accelerators: # optional
           gpu:
-            count: 0
+            count: 1
             type: gpu
-            product: nvidia-tesla-t4
+            product: NVIDIA-A100-SXM4-80GB-MIG-3g.40gb
 

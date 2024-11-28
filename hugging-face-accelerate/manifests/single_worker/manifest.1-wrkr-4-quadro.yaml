@@ -1,0 +1,41 @@
+# This manifest run the training with:
+# - 1 container
+# - 4 Quadro-RTX-4000 GPU per container (1*4=4GPUs)
+#
+# - mixed_precision fp16
+# - batch_size 32
+# - epochs 12
+# - model: openai-community/gpt2 (bc only 8GiB of GPU DRAM)
+# Execution time: 2m14s.
+
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: hugging-face-accelerate # hugging-face-accelerate folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: pytorch
+  image: image
+  # env NCCL_P2P_DISABLE=\"1\" NCCL_IB_DISABLE=\"1\"
+  # these 2 environment variables have to be set when using Quadro GPUs because
+  # RTX 4000 series doesn't support faster communication broadband via P2P or IB.
+  command: "env NCCL_P2P_DISABLE=\"1\" NCCL_IB_DISABLE=\"1\" torchrun --nproc_per_node 4 main.py --mixed_precision fp16 --model openai-community/gpt2" # --nproc_per_node=={Number of GPUs}
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 4
+        ramRatio: 8 # 32GB
+        accelerators: # optional
+          gpu:
+            count: 4
+            type: gpu
+            product: Quadro-RTX-4000
+

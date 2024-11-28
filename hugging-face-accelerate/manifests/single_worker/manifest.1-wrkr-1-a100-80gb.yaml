@@ -1,0 +1,37 @@
+# This manifest run the training with:
+# - 1 container
+# - 1 A100 80GB GPU per container
+#
+# - mixed_precision bf16
+# - batch_size 112
+# - epochs 12
+# - model: tinyllama
+# Execution time: 4m23s.
+
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: hugging-face-accelerate # hugging-face-accelerate folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: pytorch
+  image: image
+  command: "torchrun --nproc_per_node 1 main.py --mixed_precision bf16 --batch_size 112" # --num_processes=={Number of GPUs}
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 2
+        ramRatio: 16 # 32GB
+        accelerators: # optional
+          gpu:
+            count: 1
+            type: gpu
+            product: NVIDIA-A100-SXM4-80GB

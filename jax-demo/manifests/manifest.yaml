@@ -1,0 +1,26 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: jax-demo
+  context: jax-demo # jax-demo folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: jax
+  image: jax-demo
+  command: "python3 -u /app/main.py"
+  tensorboard:
+    enabled: true
+  types:
+    Worker:
+      count: 2
+      resources:
+        cpus: 4
+        ramRatio: 4 # = 4 cpus * 4 ramRatios = 16GB
+        shmSizeGB: 0
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: Tesla-V100-SXM3-32GB

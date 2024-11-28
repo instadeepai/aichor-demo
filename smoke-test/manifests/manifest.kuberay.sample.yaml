@@ -3,8 +3,8 @@ apiVersion: 0.2.2
 
 builder:
   image: image
-  dockerfile: ./build/ray.Dockerfile
-  context: .
+  context: smoke-test # smoke-test folder
+  dockerfile: ./build/ray.Dockerfile # need ray installed
 
 spec:
   operator: kuberay

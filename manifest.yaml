@@ -3,27 +3,36 @@ apiVersion: 0.2.2
 
 builder:
   image: image
-  dockerfile: ./build/Dockerfile
-  context: .
+  context: pytorch-demo
+  dockerfile: ./Dockerfile
 
 spec:
-  operator: tf
+  operator: pytorch
   image: image
-  command: "python3 -u main.py --operator=tf --sleep=300 --tb-write=True"
+  command: "python3 src/main.py"
 
   tensorboard:
     enabled: true
 
   types:
+    Master:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4
+        accelerators: # optional
+          gpu:
+            count: 1
+            type: gpu
+            product: nvidia-tesla-t4
     Worker:
       count: 1
       resources:
-        cpus: 1
-        ramRatio: 2
-        shmSizeGB: 0
+        cpus: 8
+        ramRatio: 4
         accelerators: # optional
           gpu:
-            count: 0
+            count: 1
             type: gpu
             product: nvidia-tesla-t4
 

@@ -1,0 +1,38 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: raytune-pong
+  context: raytune-pong # raytune-pong folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: kuberay
+  image: raytune-pong
+  command: "python main.py"
+
+  debug:
+    jupyter: false
+
+  tensorboard: # optional, disabled by default
+    enabled: true
+
+  types:
+    Head:
+      resources:
+        cpus: 6
+        ramRatio: 6
+        accelerators: # optional
+          gpu:
+            count: 1
+            product: NVIDIA-A100-SXM4-40GB
+            type: gpu
+
+    Workers:
+      - name: cpu-workers
+        count: 5
+        resources:
+          cpus: 6
+          ramRatio: 2
+          shmSizeGB: 0
+
