@@ -30,7 +30,7 @@ BATCH_SIZE = 64
 
 
 # maybe one day get this from a lib
-AICHOR_LOGS_PATH = "AICHOR_LOGS_PATH"
+AICHOR_TENSORBOARD_PATH = "AICHOR_TENSORBOARD_PATH"
 AICHOR_OUTPUT_PATH = "AICHOR_OUTPUT_PATH"
 
 class TrainState(train_state.TrainState):
@@ -179,7 +179,7 @@ def main():
     state = create_train_state(rng, jnp.ones((BATCH_SIZE, 32, 32, 3)))
 
     state = jax_utils.replicate(state)
-    writer = SummaryWriter(os.environ.get("AICHOR_LOGS_PATH"))
+    writer = SummaryWriter(os.environ.get("AICHOR_TENSORBOARD_PATH"))
 
     for epoch in range(10):
         dl, dl_len = get_dataloader()

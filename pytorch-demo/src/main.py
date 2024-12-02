@@ -71,7 +71,7 @@ def test(model, device, test_loader, writer, epoch):
     writer.add_scalar('test/loss', test_loss, epoch)
 
 def main():
-    writer = SummaryWriter(os.environ.get("AICHOR_LOGS_PATH", "./runs"))
+    writer = SummaryWriter(os.environ.get("AICHOR_TENSORBOARD_PATH", "./runs"))
     use_cuda = torch.cuda.is_available()
     if use_cuda:
         print('Using CUDA')
