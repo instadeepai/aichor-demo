@@ -1,3 +1,7 @@
 **/__pycache__
-.idea
-venv
+**/.idea
+**/venv
+**/.DS_Store
+**/data
+**/runs
+**/model.pt

@@ -1,0 +1,37 @@
+# This manifest run the training with:
+# - 1 container
+# - 8 Tesla V100 32GB GPU per container (1*8=8GPUs)
+#
+# - mixed_precision fp16
+# - batch_size 24
+# - epochs 12
+# - model: tinyllama
+# Execution time: 2m15s.
+
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: hugging-face-accelerate # hugging-face-accelerate folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: pytorch
+  image: image
+  command: "torchrun --nproc_per_node 8 main.py --mixed_precision fp16 --batch_size 24" # --num_processes=={Number of GPUs}
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4 # 32GB
+        accelerators: # optional
+          gpu:
+            count: 8
+            type: gpu
+            product: Tesla-V100-SXM3-32GB

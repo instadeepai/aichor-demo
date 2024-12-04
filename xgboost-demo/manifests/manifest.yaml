@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://api.aichor.dev/schema/latest/manifest.schema.json
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: xgboost-demo
+  context: xgboost-demo
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: xgboost
+  image: xgboost-demo
+  command: "python src/train.py"
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Master:
+      count: 1
+      resources:
+        cpus: 2
+        ramRatio: 2
+        shmSizeGB: 0
+    Worker:
+      count: 1
+      resources:
+        cpus: 2
+        ramRatio: 2
+        shmSizeGB: 0

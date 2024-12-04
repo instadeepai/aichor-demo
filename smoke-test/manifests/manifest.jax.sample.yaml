@@ -3,13 +3,13 @@ apiVersion: 0.2.2
 
 builder:
   image: image
+  context: smoke-test # smoke-test folder
   dockerfile: ./build/Dockerfile
-  context: .
 
 spec:
-  operator: tf
+  operator: jax
   image: image
-  command: "python3 -u main.py --operator=tf --sleep=300 --tb-write=True"
+  command: "python3 -u main.py --operator=jax --sleep=300 --tb-write=True"
 
   tensorboard:
     enabled: true
@@ -21,9 +21,4 @@ spec:
         cpus: 1
         ramRatio: 2
         shmSizeGB: 0
-        accelerators: # optional
-          gpu:
-            count: 0
-            type: gpu
-            product: nvidia-tesla-t4
 

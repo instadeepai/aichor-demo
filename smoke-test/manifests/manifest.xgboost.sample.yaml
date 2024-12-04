@@ -1,0 +1,30 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: smoke-test # smoke-test folder
+  dockerfile: ./build/Dockerfile
+
+spec:
+  operator: xgboost
+  image: image
+  command: "python3 -u main.py --operator=xgboost --sleep=300 --tb-write=True"
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Master:
+      count: 1
+      resources:
+        cpus: 1
+        ramRatio: 2
+        shmSizeGB: 0
+    Worker:
+      count: 1
+      resources:
+        cpus: 1
+        ramRatio: 2
+        shmSizeGB: 0
+
