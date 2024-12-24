@@ -28,3 +28,7 @@ To reduce the size of the experiment you will need to
 - Reduce `num_workers` accordingly.
 
 Also you might want to reduce the stop condition at `timesteps_total`.
+
+## Extra note
+
+In case you use your own lightweight Docker image make sure that [`wget`](https://www.gnu.org/software/wget/) is installed as it is needed for the health check and the experiment will not start otherwise.
