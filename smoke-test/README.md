@@ -90,6 +90,16 @@ num processes: 1
 process id: 0
 ```
 
+### Batch Job
+
+for the Batch Job operator the script will print 1 env var inject by the operator:
+- `JOB_COMPLETION_INDEX`
+
+Example:
+```
+job index: 0
+```
+
 ### PyTorch
 
 for the Jax operator the script will print 3 env var inject by the operator:
