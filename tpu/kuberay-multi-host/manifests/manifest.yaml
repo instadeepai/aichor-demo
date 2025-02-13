@@ -1,0 +1,46 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: tpu/kuberay-multi-host
+  dockerfile: ./build/Dockerfile
+
+spec:
+  operator: kuberay
+  image: image
+  command: "python3 -u main.py"
+
+  types:
+    Head:
+      resources:
+        cpus: 4
+        ramRatio: 2
+
+    Workers:
+      - name: tpu-pool
+        # When requesting a TPU Slice, the number of VM is implied in the given topology.
+        # For example this manifest will request one 4x4 TPU Slice with 4 chips per VMs, 4x4/4=4 VMs.
+        # If count is 2, then it will request two 4x4 TPU Slices.
+        count: 1
+
+        resources:
+          cpus: 90
+          ramRatio: 2
+
+          # Requesting spot instances
+          extraSelectors:
+            cloud.google.com/gke-spot: "true"
+            cloud.google.com/gke-provisioning: spot
+          extraTolerations:
+            - key: "cloud.google.com/gke-spot"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+
+          # Requesting a 4x4 TPU Slice with 4 chips per VM. On the TPU v5e that means 4 VMs.
+          accelerators:
+            tpu:
+              type: tpu-v5-lite-podslice
+              topology: 4x4
+              tpuChipsCount: 4
