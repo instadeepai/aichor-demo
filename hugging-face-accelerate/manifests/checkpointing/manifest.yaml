@@ -1,0 +1,31 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  dockerfile: ./Dockerfile
+  context: .
+
+spec:
+  operator: pytorch
+  image: image
+  command: "torchrun --nproc_per_node 2 main.py --batch_size 400 --enable_checkpointing true --checkpoint_dir gpt2_chkpt --checkpoint_interval 10 --num_epochs 400 --model openai-community/gpt2" # --nproc_per_node=={Number of GPUs}
+
+  tensorboard:
+    enabled: true
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 16
+        ramRatio: 4
+        # rdma: # new
+        #   # list of network devices to mount on the container
+        #   devices: ["sriov_a", "sriov_b", "sriov_c", "sriov_d"]
+        accelerators:
+          gpu:
+            count: 2
+            type: gpu
+            product: NVIDIA-A100-SXM4-80GB
+
