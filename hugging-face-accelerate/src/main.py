@@ -14,7 +14,12 @@ from transformers import get_linear_schedule_with_warmup, set_seed
 from accelerate import Accelerator
 from accelerate.utils import ProjectConfiguration
 
-from utils import get_dataset, get_tokenizer, get_model, save_final_model, TENSORBOARD_PATH, AWS_ENDPOINT_URL
+from data.tokenizer import get_tokenizer
+from data.dataset import get_dataset
+from data.model import get_model
+from data.checkpointing import save_checkpoint, load_checkpoint
+from data.save_final_model import save_final_model
+from constant import AICHOR_TENSORBOARD_PATH, AICHOR_AWS_ENDPOINT_URL
 
 SEED = 42
 
@@ -23,11 +28,14 @@ LOCAL_PROJECT_DIR: str = "logs"
 def training_function(args: argparse.Namespace):
     # Initialize accelerator
     accelerator = Accelerator(
-        cpu=False,
+        cpu=args.cpu,
         mixed_precision=args.mixed_precision,
         project_dir=LOCAL_PROJECT_DIR,
         project_config=ProjectConfiguration(
-            logging_dir=os.environ.get(TENSORBOARD_PATH),
+            automatic_checkpoint_naming=True,
+            project_dir=LOCAL_PROJECT_DIR,
+            total_limit=1,
+            logging_dir=os.environ.get(AICHOR_TENSORBOARD_PATH) if args.local is not None else None,
         ),
         log_with="tensorboard",
     )
@@ -36,7 +44,9 @@ def training_function(args: argparse.Namespace):
     run = os.path.split(__file__)[-1].split(".")[0]
     accelerator.init_trackers(run, {"lr": args.learning_rate, "num_epochs": args.num_epochs, "seed": SEED, "batch_size": args.batch_size})
 
-    s3 = s3fs.S3FileSystem(endpoint_url=os.environ.get(AWS_ENDPOINT_URL))
+    s3 = None
+    if not args.local:
+       s3 = s3fs.S3FileSystem(endpoint_url=os.environ.get(AICHOR_AWS_ENDPOINT_URL))
 
     tokenizer = get_tokenizer(accelerator=accelerator, s3=s3, model_name=args.model)
     datasets = get_dataset(accelerator=accelerator, s3=s3)
@@ -114,15 +124,19 @@ def training_function(args: argparse.Namespace):
         model, optimizer, train_dataloader, eval_dataloader, lr_scheduler
     )
 
-    # We need to keep track of how many total steps we have iterated over
-    overall_step = 0
+    starting_epoch = 0
+
+    if args.enable_checkpointing:
+        starting_epoch = load_checkpoint(accelerator=accelerator, s3=s3, args=args)
+    
+    accelerator.wait_for_everyone()
 
     # Now we train the model
     if accelerator.is_main_process:
         print("Start training")
         start_time = time.time()
 
-    for epoch in range(0, args.num_epochs):
+    for epoch in range(starting_epoch, args.num_epochs):
         model.train()
         total_loss = 0
         for step, batch in enumerate(train_dataloader):
@@ -137,8 +151,6 @@ def training_function(args: argparse.Namespace):
             optimizer.step()
             lr_scheduler.step()
             optimizer.zero_grad()
-
-            overall_step += 1
 
         model.eval()
         for step, batch in enumerate(eval_dataloader):
@@ -165,6 +177,10 @@ def training_function(args: argparse.Namespace):
             },
             step=epoch,
         )
+
+        # Save checkpoint if enabled
+        if args.enable_checkpointing and (epoch + 1) % args.checkpoint_interval == 0:
+            save_checkpoint(accelerator=accelerator, epoch=epoch, checkpoint_dir=args.checkpoint_dir, s3=s3)
 
     accelerator.wait_for_everyone()
     if accelerator.is_main_process:
@@ -193,6 +209,12 @@ def main():
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size. Adjust depending on GPU memory available")
     parser.add_argument("--num_epochs", type=int, default=12)
     parser.add_argument("--learning_rate", type=float, default=2e-5)
+    parser.add_argument("--enable_checkpointing", type=bool, default=False, help="enable automatic checkpointing")
+    parser.add_argument("--checkpoint_interval", type=int, default=50, help="automatic checkpoint epoch interval")
+    parser.add_argument("--checkpoint_dir", type=str, default="checkpoints", help="checkpoint dir name on aichor output bucket. Used for both loading and saving.")
+    parser.add_argument("--load_checkpoint_name", type=str, default=None, help="Checkpoint name to load. Leave this unset to automatically load from latest checkpoint.")
+    parser.add_argument("--local", action='store_true', help="Run locally, disable dependency to AIchor S3 and environment variables.")
+    parser.add_argument("--cpu", action='store_true', help="Run on CPU. Disabled by default")
     args = parser.parse_args()
 
     training_function(args)
