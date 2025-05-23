@@ -7,6 +7,7 @@ from src.operators.tf import tfop
 from src.operators.pytorch import pytorchop
 from src.operators.xgboost import xgboostop
 from src.operators.batchjob import batchjobop
+from src.operators.jobset import jobsetop
 
 OPERATOR_TABLE = {
     "ray": rayop,
@@ -15,7 +16,8 @@ OPERATOR_TABLE = {
     "jax": jaxop,
     "pytorch": pytorchop,
     "xgboost": xgboostop,
-    "batchjob": batchjobop
+    "batchjob": batchjobop,
+    "jobset": jobsetop
 }
 
 if __name__ == "__main__":
