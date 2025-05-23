@@ -1,0 +1,37 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: jobset-demo
+  context: jobset-demo # jobset-demo folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: jobset
+  image: jobset-demo
+  command: "python3 -u /app/main.py"
+  tensorboard:
+    enabled: true
+  types:
+    master:
+      count: 1
+      resources:
+        cpus: 3
+        ramRatio: 4 # = 3 cpus * 4 ramRatios = 12GB
+        shmSizeGB: 0
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: NVIDIA-H100-80GB-HBM3
+    worker:
+      count: 2
+      resources:
+        cpus: 4
+        ramRatio: 4 # = 4 cpus * 4 ramRatios = 16GB
+        shmSizeGB: 0
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: NVIDIA-H100-80GB-HBM3
