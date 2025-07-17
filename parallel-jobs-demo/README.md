@@ -94,11 +94,13 @@ This manifest will create an experiment with 5 containers, each one of them will
 
 ### Inside the code
 
-By selecting multiple workers with the jobset operator, it will schedule 5 containers and will, concurrently, execute `python main.py`. Workers should read the `JOB_GLOBAL_INDEX` environment variable to know what their rank is. This variable is injected by AIchor components:
+By selecting multiple workers with the jobset operator, it will schedule 5 containers and will, concurrently, execute `python main.py`. Workers should read the `JOB_GLOBAL_INDEX` environment variable to know what their rank is.
+Please note that as long as we don't have different types (i.e. we have only worker or only master) `JOB_INDEX` will be equal to `JOB_GLOBAL_INDEX`
+This variable is injected by AIchor components:
 
 ```python
 def get_rank() -> int:
-    jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX")
+    jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX") # here JOB_INDEX could also be used in this scenario
     if jobset_global_index == None:
         return 0
 
@@ -130,217 +132,24 @@ Now what you saw above was the most basic setup, now we can go through the scena
 Scenario 1:
 This would be very similar to the simple case:
 
-```yaml
-kind: AIchorManifest
-apiVersion: 0.2.1
-
-builder:
-  image: jobset-multi-jobs
-  dockerfile: ./Dockerfile
-  context: .
-
-spec:
-  operator: jobset
-  image: jobset-multi-jobs
-  command: "python -u src/main.py"
-
-  types:
-    worker:
-      count: 10
-      resources:
-        cpus: 20
-        ramRatio: 2
-        shmSizeGB: 0
-```
-and then the following in the code:
-
-```python
-def get_rank() -> int:
-    jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX")
-    if jobset_global_index == None:
-        return 0
-
-```
-
-Then when your worker is aware of its rank you can assign them different tasks:
-```python
-if __name__ == '__main__':
-    rank = get_rank()
-
-    if rank == 0:
-        print("actions 1 to 100")
-        time.sleep(30)
-    elif rank == 1:
-        print("actions 101 to 200")
-        time.sleep(40)
-    .
-    .
-    .
-
-    else:
-        print(f"actions 901 to 1000")
-        time.sleep(10)
-```
+Scenario 1 -> (./scenarios/scenario-1.md)
 
 Scenario 2:
 
-for this since we need separate specifications in terms of the cpu requirements we need different types:
+For this since we need separate specifications in terms of the cpu requirements we need different types:
 
-```yaml
-kind: AIchorManifest
-apiVersion: 0.2.1
-
-builder:
-  image: jobset-multi-jobs
-  dockerfile: ./Dockerfile
-  context: .
-
-spec:
-  operator: jobset
-  image: jobset-multi-jobs
-  command: "python -u src/main.py"
-
-  types:
-    worker-heavy:
-      count: 1
-      resources:
-        cpus: 60
-        ramRatio: 2
-        shmSizeGB: 0
-    worker:
-      count: 7
-      resources:
-        cpus: 20
-        ramRatio: 2
-        shmSizeGB: 0
-```
-But in this scenario because we have two different types we cannot necessarily rely on the `JOB_GLOBAL_INDEX` variable instead we must use some of the other ones
-Namely `JOB_INDEX` and `REPLICATED_JOB_NAME`
-
-```python
-def get_index() -> int:
-    jobset_type_index = os.environ.get("JOB_INDEX")
-    if jobset_type_index == None:
-        return 0
-def get_type() -> str:
-    jobset_type = os.environ.get("REPLICATED_JOB_NAME")
-    if jobset_type == None:
-        return 0
-```
-and then use the variables like this:
-```python
-if __name__ == '__main__':
-    type_of_job = get_type()
-    rank = get_index()
-    if type_of_job == "worker-heavy":
-      print("actions 1 to 300")
-    elif type_of_job == "worker
-      if rank == 0:
-          print("actions 301 to 400")
-          time.sleep(30)
-      elif rank == 1:
-          print("actions 401 to 500")
-          time.sleep(40)
-      .
-      .
-      .
-
-      else:
-          print(f"actions 901 to 1000")
-          time.sleep(10)
-```
+Scenario 2 -> (./scenarios/scenario-2.md)
 
 Scenario 3:
 
+
 for this scenario we need the 2D container array that jobset provides and we can acheive that using the `completions` in the manifest like this (please note that `parallelisms` must also be set to the same number as `completions` if you want all the pods to run at the same time):
+***Please note that `JOB_INDEX` and `JOB_GLOBAL_INDEX` only scale on the count number, meaning that all the completion in each job replica (i.e. the ones like worker 0-0, worker 0-1 and worker 0-3 and ... all share the same `JOB_INDEX`)
 
-```yaml
-kind: AIchorManifest
-apiVersion: 0.2.1
+Scenario 3 -> (./scenarios/scenario-3.md)
 
-builder:
-  image: jobset-multi-jobs
-  dockerfile: ./Dockerfile
-  context: .
-
-spec:
-  operator: jobset
-  image: jobset-multi-jobs
-  command: "python -u src/main.py"
-
-  types:
-    worker:
-      count: 10
-      completions: 10
-      parallelisms: 10
-      resources:
-        cpus: 2
-        ramRatio: 2
-        shmSizeGB: 0
-
-```
-now the code could look like this (you can be more imaginative with using the env variables of course so you don't have to write 100 different if cases)
-
-```python
-def get_index() -> int:
-    jobset_type_index = os.environ.get("JOB_INDEX")
-    if jobset_type_index == None:
-        return 0
-def get_completion() -> int:
-    jobset_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
-    if jobset_completion_index == None:
-        return 0
-```
-and then use the variables like this:
-```python
-if __name__ == '__main__':
-    rank = get_completion()
-    index = get_index()
-    if index == 0:
-      if rank == 0:
-        print("actions 1 to 10")
-      elif rank ==1:
-        print("actions 11 to 20")
-    .
-    .
-    .
-    if index == 1:
-      if rank == 0:
-        print("actions 201 to 210")
-      elif rank ==1:
-        print("actions 211 to 220")
-    .
-    .
-    .
-
-```
 Scenario 4:
 
 For this scenario we must operate using the `parallelisms` and set that to the number of pods we want running at the same time:
 
-```yaml
-kind: AIchorManifest
-apiVersion: 0.2.1
-
-builder:
-  image: jobset-multi-jobs
-  dockerfile: ./Dockerfile
-  context: .
-
-spec:
-  operator: jobset
-  image: jobset-multi-jobs
-  command: "python -u src/main.py"
-
-  types:
-    worker:
-      count: 10
-      completions: 10
-      parallelisms: 2
-      resources:
-        cpus: 2
-        ramRatio: 2
-        shmSizeGB: 0
-
-```
-The code for this scenario would be identical to the previous scenario
+Scenario 4 -> (./scenarios/scenario-4.md)

@@ -1,0 +1,23 @@
+kind: AIchorManifest
+apiVersion: 0.2.1
+
+builder:
+  image: jobset-multi-jobs
+  context: parallel-jobs-demo # parallel-jobs-demo folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: jobset
+  image: jobset-multi-jobs
+  command: "python -u src/main.10-10-10.py"
+
+  types:
+    worker:
+      count: 10
+      completions: 10   # optional, defaults to 1
+      parallelisms: 10  # optional, defaults to 1
+      resources:
+        cpus: 2
+        ramRatio: 2
+        shmSizeGB: 0
+
