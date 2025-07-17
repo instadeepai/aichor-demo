@@ -3,12 +3,10 @@ import os
 import time
 
 def get_rank() -> int:
-    tf_config_raw = os.environ.get("TF_CONFIG")
-    if tf_config_raw == None:
+    jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX")
+    if jobset_global_index == None:
         return 0
 
-    tf_config = json.loads(tf_config_raw)
-    return int(tf_config["task"]["index"])
 
 if __name__ == '__main__':
     rank = get_rank()

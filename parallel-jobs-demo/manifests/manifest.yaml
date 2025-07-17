@@ -7,13 +7,15 @@ builder:
   dockerfile: ./Dockerfile
 
 spec:
-  operator: tf
-  image: tf-multi-jobs
+  operator: jobset
+  image: jobset-multi-jobs
   command: "python -u src/main.py"
 
   types:
-    Worker:
-      count: 5
+    worker:
+      count: 1
+      completions: 3
+      parallelisms: 3
       resources:
         cpus: 1
         ramRatio: 1
