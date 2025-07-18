@@ -37,6 +37,7 @@ and then the following in the code:
 ```python
 import os
 import time
+import random
 
 def jobsetop():
     job_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
@@ -68,22 +69,10 @@ if __name__ == '__main__':
 
     rank = get_rank()
 
-    print(f"here is the rank of this worker: {rank}")
-
-    print("actions for this worker")
-    if rank == "0":
-        print("actions 1 to 100")
-        time.sleep(30)
-    elif rank == "1":
-        print("actions 101 to 200")
-        time.sleep(40)
-    # .
-    # .
-    # .
-    # rest of the if conditions
-    else:
-        print("actions 901 to 1000")
-        time.sleep(10)
+    start = rank * 100 + 1
+    end = start + 99
+    print(f"Actions {start} to {end}")
+    time.sleep(random.randint(10, 60))
 ```
 Below you can see the pods succeeded on AIchor:
 
@@ -91,10 +80,10 @@ Below you can see the pods succeeded on AIchor:
 
 and now the logs of a few of the pods
 
-worker-0-0:
+worker-2-0:
 
-![worker-0-0](screenshots/scenario1-0-0.png)
+![worker-2-0](screenshots/scenario1-2-0.png)
 
-worker-1-0:
+worker-8-0:
 
-![worker-1-0](screenshots/scenario1-1-0.png)
+![worker-8-0](screenshots/scenario1-8-0.png)

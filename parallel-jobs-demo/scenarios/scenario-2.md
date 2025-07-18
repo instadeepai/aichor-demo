@@ -43,6 +43,7 @@ But in this scenario because we have two different types we cannot necessarily r
 ```python
 import time
 import os
+import random
 
 def jobsetop():
     job_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
@@ -77,23 +78,15 @@ if __name__ == '__main__':
     jobsetop()
 
     type_of_job = get_type()
-    rank = get_rank()
+    rank = int(get_rank())
     if type_of_job == "worker-heavy":
-      print("actions 1 to 300")
-    elif type_of_job == "worker":
-      if rank == "0":
-          print("actions 301 to 400")
-          time.sleep(30)
-      elif rank == "1":
-          print("actions 401 to 500")
-          time.sleep(40)
-    #   .
-    #   .
-    #   .
+      print("Actions 1 to 300")
+    else:
+      start = rank * 100 + 1
+      end = start + 99
+      print(f"Actions {start} to {end}")
+      time.sleep(random.randint(10, 60))
 
-      else:
-          print(f"actions 901 to 1000")
-          time.sleep(10)
 ```
 Below you can see the pods in this scenario succeed
 
@@ -105,6 +98,6 @@ worker-heavy-0-0:
 
 ![worker-heavy-0-0](screenshots/scenario2-0-0.png)
 
-worker-0-0:
+worker-5-0:
 
-![worker-0-0](screenshots/scenario2-1-0.png)
+![worker-0-0](screenshots/scenario2-5-0.png)

@@ -46,6 +46,7 @@ now the code could look like this (you can be more imaginative with using the en
 ```python
 import time
 import os
+import random
 
 def jobsetop():
     job_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
@@ -79,28 +80,14 @@ if __name__ == '__main__':
     print(f"here are the rest of the jobset variables in this container:")
     jobsetop()
 
-    rank = get_completion()
-    index = get_index()
-    if index == "0":
-      if rank == "0":
-        print("actions 1 to 10")
-        time.sleep(10)
-      elif rank =="1":
-        print("actions 11 to 20")
-        time.sleep(10)
-    # .
-    # .
-    # .
-    if index == "1":
-      if rank == "0":
-        print("actions 201 to 210")
-        time.sleep(10)
-      elif rank =="1":
-        print("actions 211 to 220")
-        time.sleep(10)
-    # .
-    # .
-    # .
+    rank = int(get_completion())
+    index = int(get_index())
+    start = rank * 100
+    completion_start = index * 10 + 1
+    completion_end= completion_start + 9
+    print(f"Actions {start+completion_start} to {start+completion_end}")
+    time.sleep(random.randint(10, 60))
+
 ```
 
 Below you can see the pods in this scenario succeed
@@ -109,10 +96,10 @@ Below you can see the pods in this scenario succeed
 
 and now the logs of a few of the pods
 
-worker-0-1:
+worker-8-5:
 
-![worker-0-1](screenshots/scenario3-0-1.png)
+![worker-0-1](screenshots/scenario3-8-5.png)
 
-worker-1-1:
+worker-3-9:
 
 ![worker-1-1](screenshots/scenario3-1-1.png)

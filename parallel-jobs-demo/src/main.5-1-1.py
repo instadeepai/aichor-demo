@@ -1,7 +1,7 @@
 import os
 import time
+import random
 
-# this function is just to get all the variables for a more detailed look
 def jobsetop():
     job_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
     job_index = os.environ.get("JOB_INDEX")
@@ -24,6 +24,7 @@ def get_rank() -> int:
     return jobset_global_index
 
 
+# Now we can use the ranks to define different tasks
 if __name__ == '__main__':
 
     print(f"here are the rest of the jobset variables in this container:")
@@ -31,16 +32,7 @@ if __name__ == '__main__':
 
     rank = get_rank()
 
-    print(f"here is the rank of this worker: {rank}")
-
-    rank = get_rank()
-
-    if rank == "0":
-        print("hey I am rank 0, sleeping for 30s")
-        time.sleep(30)
-    elif rank == "1":
-        print("hey I am rank 1, sleeping for 40s")
-        time.sleep(40)
-    else:
-        print(f"hey I am rank {rank} sleeping for 10s")
-        time.sleep(10)
+    start = rank * 100 + 1
+    end = start + 99
+    print(f"Actions {start} to {end}")
+    time.sleep(random.randint(10, 60))
