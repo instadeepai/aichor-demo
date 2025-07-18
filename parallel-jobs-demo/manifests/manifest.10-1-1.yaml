@@ -2,19 +2,20 @@ kind: AIchorManifest
 apiVersion: 0.2.1
 
 builder:
-  image: tf-multi-jobs
+  image: jobset-multi-jobs
   context: parallel-jobs-demo # parallel-jobs-demo folder
   dockerfile: ./Dockerfile
 
 spec:
-  operator: tf
-  image: tf-multi-jobs
-  command: "python -u src/main.py"
+  operator: jobset
+  image: jobset-multi-jobs
+  command: "python -u src/main.10-1-1.py"
 
   types:
-    Worker:
-      count: 5
+    worker:
+      count: 10
       resources:
-        cpus: 1
-        ramRatio: 1
+        cpus: 20
+        ramRatio: 2
         shmSizeGB: 0
+

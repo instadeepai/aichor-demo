@@ -1,0 +1,26 @@
+kind: AIchorManifest
+apiVersion: 0.2.1
+
+builder:
+  image: jobset-multi-jobs
+  context: parallel-jobs-demo # parallel-jobs-demo folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: jobset
+  image: jobset-multi-jobs
+  command: "python -u src/main.wkr-heavy-1-1-1.py"
+
+  types:
+    worker-heavy:
+      count: 1
+      resources:
+        cpus: 60
+        ramRatio: 2
+        shmSizeGB: 0
+    worker:
+      count: 7
+      resources:
+        cpus: 20
+        ramRatio: 2
+        shmSizeGB: 0
