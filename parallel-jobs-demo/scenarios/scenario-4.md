@@ -25,7 +25,7 @@ builder:
 spec:
   operator: jobset
   image: jobset-multi-jobs
-  command: "python -u src/main.py"
+  command: "python -u src/main.10-2-10.py"
 
   types:
     worker:
@@ -38,4 +38,4 @@ spec:
         shmSizeGB: 0
 
 ```
-The code for this scenario would be identical to the previous scenario
+The code for this scenario would be identical to scenario 3 and the resulting containers and logs will also be the same, just that they will be deployed 2 at a time per replica

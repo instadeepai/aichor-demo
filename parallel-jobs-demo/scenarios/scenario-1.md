@@ -22,7 +22,7 @@ builder:
 spec:
   operator: jobset
   image: jobset-multi-jobs
-  command: "python -u src/main.py"
+  command: "python -u src/main.10-1-1.py"
 
   types:
     worker:
@@ -35,29 +35,66 @@ spec:
 and then the following in the code:
 
 ```python
+import os
+import time
+
+def jobsetop():
+    job_completion_index = os.environ.get("JOB_COMPLETION_INDEX")
+    job_index = os.environ.get("JOB_INDEX")
+    global_replicas = os.environ.get("GLOBAL_REPLICAS")
+    job_global_index = os.environ.get("JOB_GLOBAL_INDEX")
+    replicated_job_name = os.environ.get("REPLICATED_JOB_NAME")
+    replicated_job_replicas = os.environ.get("REPLICATED_JOB_REPLICAS")
+
+    print("JOB_COMPLETION_INDEX ", job_completion_index)
+    print("JOB_INDEX ", job_index)
+    print("GLOBAL_REPLICAS ", global_replicas)
+    print("JOB_GLOBAL_INDEX ", job_global_index)
+    print("REPLICATED_JOB_NAME ", replicated_job_name)
+    print("REPLICATED_JOB_REPLICAS ", replicated_job_replicas)
+
 def get_rank() -> int:
     jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX") # here JOB_INDEX could also be used in this scenario
     if jobset_global_index == None:
         return 0
+    return jobset_global_index
 
-```
 
-Then when your worker is aware of its rank you can assign them different tasks:
-```python
+# Now we can use the ranks to define different tasks
 if __name__ == '__main__':
+
+    print(f"here are the rest of the jobset variables in this container:")
+    jobsetop()
+
     rank = get_rank()
 
-    if rank == 0:
+    print(f"here is the rank of this worker: {rank}")
+
+    print("actions for this worker")
+    if rank == "0":
         print("actions 1 to 100")
         time.sleep(30)
-    elif rank == 1:
+    elif rank == "1":
         print("actions 101 to 200")
         time.sleep(40)
-    .
-    .
-    .
-
+    # .
+    # .
+    # .
+    # rest of the if conditions
     else:
-        print(f"actions 901 to 1000")
+        print("actions 901 to 1000")
         time.sleep(10)
 ```
+Below you can see the pods succeeded on AIchor:
+
+![alt text](/screenshots/scenario1-pods.png)
+
+and now the logs of a few of the pods
+
+worker-0-0:
+
+![alt text](/screenshots/scenario1-0-0.png)
+
+worker-1-0:
+
+![alt text](/screenshots/scenario1-1-0.png)

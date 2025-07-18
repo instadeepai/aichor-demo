@@ -144,7 +144,7 @@ Scenario 3:
 
 
 for this scenario we need the 2D container array that jobset provides and we can acheive that using the `completions` in the manifest like this (please note that `parallelisms` must also be set to the same number as `completions` if you want all the pods to run at the same time):
-***Please note that `JOB_INDEX` and `JOB_GLOBAL_INDEX` only scale on the count number, meaning that all the completion in each job replica (i.e. the ones like worker 0-0, worker 0-1 and worker 0-3 and ... all share the same `JOB_INDEX`)
+***Please note that `JOB_INDEX` and `JOB_GLOBAL_INDEX` only scale on the count number, meaning that all the completion in each job replica (i.e. the ones like worker 0-0, worker 0-1 and worker 0-3 and ...) all share the same `JOB_INDEX`
 
 [Scenario 3](./scenarios/scenario-3.md)
 
