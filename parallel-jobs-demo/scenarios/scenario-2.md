@@ -38,8 +38,7 @@ spec:
         ramRatio: 2
         shmSizeGB: 0
 ```
-But in this scenario because we have two different types we cannot necessarily rely on the `JOB_GLOBAL_INDEX` variable instead we must use some of the other ones
-Namely `JOB_INDEX` and `REPLICATED_JOB_NAME`
+But in this scenario because we have two different types we cannot necessarily rely on the `JOB_GLOBAL_INDEX` variable instead we must use some of the other ones. Namely `JOB_INDEX` and `REPLICATED_JOB_NAME`
 
 ```python
 import time
