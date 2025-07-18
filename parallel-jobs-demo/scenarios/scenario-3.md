@@ -98,8 +98,8 @@ and now the logs of a few of the pods
 
 worker-8-5:
 
-![worker-0-1](screenshots/scenario3-8-5.png)
+![worker-8-5](screenshots/scenario3-8-5.png)
 
 worker-3-9:
 
-![worker-1-1](screenshots/scenario3-1-1.png)
+![worker-3-9](screenshots/scenario3-3-9.png)
