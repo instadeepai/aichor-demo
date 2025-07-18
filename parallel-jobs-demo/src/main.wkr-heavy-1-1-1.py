@@ -17,7 +17,7 @@ def jobsetop():
     print("REPLICATED_JOB_REPLICAS ", replicated_job_replicas)
 
 def get_rank() -> int:
-    jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX") # here JOB_INDEX could also be used in this scenario
+    jobset_global_index = os.environ.get("JOB_INDEX") # here JOB_GLOBAL_INDEX can NOT be used in this scenario
     if jobset_global_index == None:
         return 0
     return jobset_global_index
