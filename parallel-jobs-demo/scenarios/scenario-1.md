@@ -87,14 +87,14 @@ if __name__ == '__main__':
 ```
 Below you can see the pods succeeded on AIchor:
 
-![alt text](/screenshots/scenario1-pods.png)
+![Pod list](screenshots/scenario1-pods.png)
 
 and now the logs of a few of the pods
 
 worker-0-0:
 
-![alt text](/screenshots/scenario1-0-0.png)
+![worker-0-0](screenshots/scenario1-0-0.png)
 
 worker-1-0:
 
-![alt text](/screenshots/scenario1-1-0.png)
+![worker-1-0](screenshots/scenario1-1-0.png)

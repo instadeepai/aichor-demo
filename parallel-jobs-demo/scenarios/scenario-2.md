@@ -22,7 +22,7 @@ builder:
 spec:
   operator: jobset
   image: jobset-multi-jobs
-  command: "python -u src/main.py"
+  command: "python -u src/main.wkr-heavy-1-1-1.py"
 
   types:
     worker-heavy:
@@ -98,14 +98,14 @@ if __name__ == '__main__':
 ```
 Below you can see the pods in this scenario succeed
 
-![alt text](/screenshots/scenario2-pods.png)
+![Pod list](screenshots/scenario2-pods.png)
 
 and now the logs of a few of the pods
 
 worker-heavy-0-0:
 
-![alt text](/screenshots/scenario2-0-0.png)
+![worker-heavy-0-0](screenshots/scenario2-0-0.png)
 
 worker-0-0:
 
-![alt text](/screenshots/scenario2-1-0.png)
+![worker-0-0](screenshots/scenario2-1-0.png)

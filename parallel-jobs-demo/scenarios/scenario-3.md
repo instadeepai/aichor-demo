@@ -105,14 +105,14 @@ if __name__ == '__main__':
 
 Below you can see the pods in this scenario succeed
 
-![alt text](/screenshots/scenario3-pods.png)
+![Pod list](screenshots/scenario3-pods.png)
 
 and now the logs of a few of the pods
 
 worker-0-1:
 
-![alt text](/screenshots/scenario3-0-1.png)
+![worker-0-1](screenshots/scenario3-0-1.png)
 
 worker-1-1:
 
-![alt text](/screenshots/scenario3-1-1.png)
+![worker-1-1](screenshots/scenario3-1-1.png)
