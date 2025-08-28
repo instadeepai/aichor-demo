@@ -6,7 +6,6 @@ import s3fs
 
 import evaluate
 import torch
-from datasets import load_dataset
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from transformers import get_linear_schedule_with_warmup, set_seed
@@ -119,7 +118,7 @@ def training_function(args: argparse.Namespace):
 
     # Now we train the model
     if accelerator.is_main_process:
-        print("Start training")
+        accelerator.print("Start training")
         start_time = time.time()
 
     for epoch in range(0, args.num_epochs):
