@@ -25,10 +25,12 @@ def get_tokenizer(accelerator: Accelerator, s3: S3FileSystem, model_name: str) -
     # download model from S3 if present
     if s3.exists(s3_path):
         # only main process should download from s3
+        accelerator.print(f"Found tokenizer {model_name} at {s3_path}, downloading from S3 on local main process")
         if accelerator.is_local_main_process:
             s3.get(s3_path, local_path, recursive=True)
         load_from = local_path
     else: # download from HuggingFace
+        accelerator.print(f"Tokenizer {model_name} not found on S3, downloading from HuggingFace")
         load_from = model_name
         should_save_to_s3 = True
 
@@ -47,6 +49,7 @@ def get_tokenizer(accelerator: Accelerator, s3: S3FileSystem, model_name: str) -
         tokenizer.save_pretrained(local_path)
         s3.put(local_path, s3_path, recursive=True)
         shutil.rmtree(local_path)
+        accelerator.print(f"Tokenizer saved on S3 at {s3_path}")
 
     accelerator.wait_for_everyone() # wait cleanup tasks to end
     return tokenizer
@@ -61,10 +64,12 @@ def get_model(accelerator: Accelerator, s3: S3FileSystem, model_name: str):
     # download model from S3 if present
     if s3.exists(s3_path):
         # only main process should download from s3
+        accelerator.print(f"Found model {model_name} at {s3_path}, downloading from S3 on local main process")
         if accelerator.is_local_main_process:
             s3.get(s3_path, local_path, recursive=True)
         load_from = local_path
     else: # download from HuggingFace
+        accelerator.print(f"Model {model_name} not found on S3, downloading from HuggingFace")
         load_from = model_name
         should_save_to_s3 = True
 
@@ -81,6 +86,7 @@ def get_model(accelerator: Accelerator, s3: S3FileSystem, model_name: str):
         model.save_pretrained(local_path)
         s3.put(local_path, s3_path, recursive=True)
         shutil.rmtree(local_path)
+        accelerator.print(f"Model saved on S3 at {s3_path}")
 
     accelerator.wait_for_everyone() # wait for local main process to finish cleaning directory
     return model
@@ -90,11 +96,13 @@ def get_dataset(accelerator: Accelerator, s3: S3FileSystem) -> (Dataset | Datase
     dataset: Dataset | DatasetDict
 
     if s3.exists(s3_path):
+        accelerator.print(f"Dataset glue-mrpc found at {s3_path}, loading from S3")
         dataset = load_from_disk(s3_path) # accepts S3 paths
     else:
         dataset = load_dataset("glue", "mrpc")
         if accelerator.is_main_process:
             dataset.save_to_disk(s3_path) # accepts S3 paths
+            accelerator.print(f"Dataset saved on S3 at {s3_path}")
         accelerator.wait_for_everyone()
 
     return dataset
@@ -104,10 +112,10 @@ def save_final_model(accelerator: Accelerator, model, s3: S3FileSystem):
     output_path = os.environ.get(AICHOR_OUTPUT_PATH)
 
     if accelerator.is_main_process:
-        print(f"Saving trained model at: {output_path} from main process")
+        accelerator.print(f"Saving trained model at: {output_path} from main process")
         accelerator.save_model(model, local_path)
         s3.put(local_path, output_path, recursive=True)
         shutil.rmtree(local_path)
-        print("Uploaded")
+        accelerator.print("Uploaded")
 
     accelerator.wait_for_everyone()
