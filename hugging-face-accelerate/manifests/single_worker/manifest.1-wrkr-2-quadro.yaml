@@ -22,7 +22,7 @@ spec:
   # env NCCL_P2P_DISABLE=\"1\" NCCL_IB_DISABLE=\"1\"
   # these 2 environment variables have to be set when using Quadro GPUs because
   # RTX 4000 series doesn't support faster communication broadband via P2P or IB.
-  command: "env NCCL_P2P_DISABLE=\"1\" NCCL_IB_DISABLE=\"1\" torchrun --nproc_per_node 2 main.py --mixed_precision fp16 --model openai-community/gpt2" # --nproc_per_node=={Number of GPUs}
+  command: "env NCCL_P2P_DISABLE=\"1\" NCCL_IB_DISABLE=\"1\" torchrun --nproc_per_node gpu main.py --mixed_precision fp16 --model openai-community/gpt2"
 
   tensorboard:
     enabled: true
