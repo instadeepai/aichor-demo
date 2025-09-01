@@ -1,0 +1,46 @@
+# This manifest run the training with:
+# - 1 Worker
+# - 2 NVIDIA-H100-80GB-HBM3 GPU per container (1*2=2GPUs)
+#
+# - mixed_precision fp16
+# - batch_size 48
+# - epochs 48
+# - model: tinyllama
+# Execution time: 5m50s
+
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: image
+  context: hugging-face-accelerate # hugging-face-accelerate folder
+  dockerfile: ./Dockerfile
+
+spec:
+  operator: pytorch
+  image: image
+  command: "torchrun --nproc_per_node 2 main.py --mixed_precision bf16 --batch_size 112 --num_epoch 48" # --nproc_per_node=={Number of GPUs per worker}
+
+  tensorboard:
+    enabled: true
+  
+  # debug:
+  #   vscode:
+  #     enabled: false
+  #     path: "/aichor/code"
+  #     provider: "github"
+
+  types:
+    Worker:
+      count: 1
+      resources:
+        cpus: 4
+        ramRatio: 16 # 64GB
+        # rdma: keeping this commented, don't need RDMA network in a single worker experiment.
+        #   # list of network devices to mount on the container
+        #   devices: ["sriov_a", "sriov_b", "sriov_c", "sriov_d"]
+        accelerators: # optional
+          gpu:
+            count: 2
+            type: gpu
+            product: NVIDIA-H100-80GB-HBM3

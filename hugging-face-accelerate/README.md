@@ -68,12 +68,36 @@ Same as before but network traffic has to go through inter node networking (with
 
 # Distributed with RDMA
 
-On multi nodes training if there experiment has to run a lot of network intensive operation, recommendation here is to use the RDMA network.
+When running network-intensive distributed training, RDMA (Remote Direct Memory Access) is recommended for inter-node GPU communication. RDMA is not required for single-container experiments, as intra-node GPU communication is efficiently handled by NVLink.
 
-### 2 containers with 1 GPU each on 2 different nodes
+Key points:
+- **RDMA Usage**: Enable RDMA only when using more than one worker (multi-node setups). For single-node experiments, NVLink will handle the GPU to GPU communciation.
+- **Request RDMA device access from manifest**: Request all the network devices available on nodes. For example on Kyber, GPU nodes have 4 NIC (One per PCI Switch): `["sriov_a", "sriov_b", "sriov_c", "sriov_d"]`.
+- **Performance Consideration**: NVLink is generally faster than RDMA for GPU-to-GPU communication. For optimal performance, maximize the number of GPUs per worker before scaling horizontally the number of worker containers.
 
-Using 4 Network Cards per node.
-- benchmark soon
+Find many distributed, multi host manifest examples using the RDMA network at `hugging-face-accelerate/manifests/rdma`:
+
+| Total number of GPUs | 1 Worker (single host) |   2 Workers |   4 Workers |
+|----------------------|------------------------|-------------|-------------|
+|                     1|            `1*1` 8m50s |      X      |      X      |
+|                     2|            `1*2` 5m50s | `2*1` 6m40s |      X      |
+|                     4|            `1*4` 2m51s | `2*2` 3m58s | `4*1` 5m57s |
+|                     8|            `1*8` 1m50s | `2*4` 1m53s | `4*2` 3m45s |
+|                    16|                 X      | `2*8` 1m23s | `4*4` 1m29s |
+|                    32|                 X      |      X      | `4*8` 0m59s |
+
+Reminder: Performance gains may vary depending on dataset and model size and many other parameters. This demo project focuses on showcasing PyTorch Distributed with Hugging Face Accelerate over RDMA, not on ML optimization.
+
+Just to show how **important** RDMA network is, here's a table of the exact same experiments on the same machines, same GPUs, same paremeters, only the RDMA devices weren't requested. It means that for GPU to GPU communication between 2 workers, data goes through PCI, CPU, general purpose data network, CPU (dest machine), PCI and finally destination GPU.
+
+| Total number of GPUs | 1 Worker (single host) |   2 Workers |   4 Workers |
+|----------------------|------------------------|-------------|-------------|
+|                     1|            `1*1` 8m50s |      X      |      X      |
+|                     2|            `1*2` 5m50s | `2*1` 59m56s|      X      |
+|                     4|            `1*4` 2m51s | `2*2` 32m38s| `4*1` 49m59s|
+|                     8|            `1*8` 1m50s | `2*4` 28m06s| `4*2` 27m28s|
+|                    16|                 X      | `2*8` 12m57s| `4*4` 20m29s|
+|                    32|                 X      |      X      | `4*8` N/A   |
 
 # References
 
