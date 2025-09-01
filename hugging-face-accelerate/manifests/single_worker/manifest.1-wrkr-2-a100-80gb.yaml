@@ -19,7 +19,7 @@ builder:
 spec:
   operator: pytorch
   image: image
-  command: "torchrun --nproc_per_node 2 main.py --mixed_precision bf16 --batch_size 112" # --num_processes=={Number of GPUs}
+  command: "torchrun --nproc_per_node gpu main.py --mixed_precision bf16 --batch_size 112" # --num_processes=={Number of GPUs}
 
   tensorboard:
     enabled: true
