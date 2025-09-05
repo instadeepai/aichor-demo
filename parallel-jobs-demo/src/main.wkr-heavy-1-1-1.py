@@ -21,7 +21,7 @@ def get_rank() -> int:
     jobset_global_index = os.environ.get("JOB_INDEX") # here JOB_GLOBAL_INDEX can NOT be used in this scenario
     if jobset_global_index == None:
         return 0
-    return jobset_global_index
+    return int(jobset_global_index)
 
 def get_type() -> str:
     jobset_type = os.environ.get("REPLICATED_JOB_NAME")
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     jobsetop()
 
     type_of_job = get_type()
-    rank = int(get_rank())
+    rank = get_rank()
     if type_of_job == "worker-heavy":
       print("Actions 1 to 300")
     else:

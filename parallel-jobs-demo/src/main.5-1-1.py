@@ -21,7 +21,7 @@ def get_rank() -> int:
     jobset_global_index = os.environ.get("JOB_GLOBAL_INDEX") # here JOB_INDEX could also be used in this scenario
     if jobset_global_index == None:
         return 0
-    return jobset_global_index
+    return int(jobset_global_index)
 
 
 # Now we can use the ranks to define different tasks
