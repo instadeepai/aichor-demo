@@ -15,17 +15,7 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 8
-        ramRatio: 4
-        accelerators: # optional
-          gpu:
-            count: 1
-            type: gpu
-            product: nvidia-tesla-t4
-    Worker:
+    worker:
       count: 1
       resources:
         cpus: 8

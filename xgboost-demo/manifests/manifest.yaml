@@ -16,13 +16,7 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 2
-        ramRatio: 2
-        shmSizeGB: 0
-    Worker:
+    worker:
       count: 1
       resources:
         cpus: 2

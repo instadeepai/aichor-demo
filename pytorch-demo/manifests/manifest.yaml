@@ -15,18 +15,7 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 4
-        ramRatio: 3
-        shmSizeGB: 0
-        accelerators: # optional
-          gpu:
-            count: 1
-            type: gpu
-            product: NVIDIA-A100-SXM4-80GB-MIG-3g.40gb
-    Worker:
+    worker:
       count: 2
       resources:
         cpus: 4

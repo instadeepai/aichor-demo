@@ -13,7 +13,7 @@ spec:
   tensorboard:
     enabled: true
   types:
-    Worker:
+    worker:
       count: 2
       resources:
         cpus: 4

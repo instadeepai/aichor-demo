@@ -25,18 +25,8 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 4
-        ramRatio: 8 # 32GB
-        accelerators: # optional
-          gpu:
-            count: 2
-            type: gpu
-            product: Tesla-V100-SXM3-32GB
-    Worker:
-      count: 1
+    worker:
+      count: 2
       resources:
         cpus: 4
         ramRatio: 8 # 32GB
