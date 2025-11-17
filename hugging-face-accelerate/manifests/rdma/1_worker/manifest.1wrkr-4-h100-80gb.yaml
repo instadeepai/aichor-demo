@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 # This manifest run the training with:
 # - 1 Worker
 # - 4 NVIDIA-H100-80GB-HBM3 GPU per container (1*4=4GPUs)
@@ -31,7 +33,7 @@ spec:
   #     provider: "github"
 
   types:
-    Worker:
+    worker:
       count: 1
       resources:
         cpus: 8

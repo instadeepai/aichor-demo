@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 kind: AIchorManifest
 apiVersion: 0.2.2
 
@@ -13,7 +15,7 @@ spec:
   tensorboard:
     enabled: true
   types:
-    Worker:
+    worker:
       count: 2
       resources:
         cpus: 4

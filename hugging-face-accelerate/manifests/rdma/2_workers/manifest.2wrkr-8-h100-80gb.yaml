@@ -1,5 +1,7 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 # This manifest run the training with:
-# - 2 Workers (technically 1 Master + 1 Worker)
+# - 2 Workers
 # - 8 NVIDIA-H100-80GB-HBM3 GPU per container (2*8=16GPUs)
 #
 # - mixed_precision fp16
@@ -31,24 +33,8 @@ spec:
   #     provider: "github"
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 16
-        ramRatio: 16 # 256GB
-        rdma:
-          # list of network devices to mount on the container
-          # In this example running on InstaDeep's Kyber cluster, GPU nodes have 4 PF (Physical Function, NIC) each.
-          # Request VF (Virtual Function) from each one of them and let NCCL find the
-          # fastest, most optimized routes for GPU to GPU communication
-          devices: ["sriov_a", "sriov_b", "sriov_c", "sriov_d"]
-        accelerators: # optional
-          gpu:
-            count: 8
-            type: gpu
-            product: NVIDIA-H100-80GB-HBM3
-    Worker:
-      count: 1
+    worker:
+      count: 2
       resources:
         cpus: 16
         ramRatio: 16 # 256GB

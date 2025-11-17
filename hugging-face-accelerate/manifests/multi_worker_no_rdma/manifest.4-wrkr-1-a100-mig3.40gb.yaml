@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 # This manifest run the training with:
 # - 4 container
 # - 1 NVIDIA-A100-SXM4-80GB-MIG-3g.40gb GPU per container (4*1=4GPUs)
@@ -25,18 +27,8 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 2
-        ramRatio: 16 # 32GB
-        accelerators: # optional
-          gpu:
-            count: 1 # note that setting more than 1 MIG device per container is useless since only one will be usable https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#cuda-device-enumeration
-            type: gpu
-            product: NVIDIA-A100-SXM4-80GB-MIG-3g.40gb
-    Worker:
-      count: 3
+    worker:
+      count: 4
       resources:
         cpus: 2
         ramRatio: 16 # 32GB

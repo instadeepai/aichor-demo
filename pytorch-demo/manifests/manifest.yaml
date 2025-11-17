@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 kind: AIchorManifest
 apiVersion: 0.2.2
 
@@ -15,19 +17,8 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 4
-        ramRatio: 3
-        shmSizeGB: 0
-        accelerators: # optional
-          gpu:
-            count: 1
-            type: gpu
-            product: NVIDIA-A100-SXM4-80GB-MIG-3g.40gb
-    Worker:
-      count: 2
+    worker:
+      count: 3
       resources:
         cpus: 4
         ramRatio: 4

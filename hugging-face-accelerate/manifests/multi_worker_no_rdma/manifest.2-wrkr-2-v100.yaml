@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 # This manifest run the training with:
 # - 2 container
 # - 2 Tesla V100 32GB GPU per container (2*2=4GPUs)
@@ -25,18 +27,8 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 4
-        ramRatio: 8 # 32GB
-        accelerators: # optional
-          gpu:
-            count: 2
-            type: gpu
-            product: Tesla-V100-SXM3-32GB
-    Worker:
-      count: 1
+    worker:
+      count: 2
       resources:
         cpus: 4
         ramRatio: 8 # 32GB

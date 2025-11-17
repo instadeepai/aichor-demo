@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 # This manifest run the training with:
 # - 1 container
 # - 2 Quadro-RTX-4000 GPU per container (1*2=2GPUs)
@@ -28,7 +30,7 @@ spec:
     enabled: true
 
   types:
-    Worker:
+    worker:
       count: 1
       resources:
         cpus: 2

@@ -1,4 +1,5 @@
-# yaml-language-server: $schema=https://api.aichor.dev/schema/latest/manifest.schema.json
+# yaml-language-server: $schema=https://instadeep.aichor.ai/schema/latest/manifest.schema.json
+
 kind: AIchorManifest
 apiVersion: 0.2.2
 
@@ -16,14 +17,8 @@ spec:
     enabled: true
 
   types:
-    Master:
-      count: 1
-      resources:
-        cpus: 2
-        ramRatio: 2
-        shmSizeGB: 0
-    Worker:
-      count: 1
+    worker:
+      count: 2
       resources:
         cpus: 2
         ramRatio: 2
