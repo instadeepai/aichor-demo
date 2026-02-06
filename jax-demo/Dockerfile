@@ -1,6 +1,6 @@
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:13.1.1-cudnn-runtime-ubuntu24.04
 
-COPY --from=nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 /usr/local/cuda/bin/ptxas /usr/local/cuda/bin/ptxas
+COPY --from=nvidia/cuda:13.1.1-cudnn-devel-ubuntu24.04 /usr/local/cuda/bin/ptxas /usr/local/cuda/bin/ptxas
 
 RUN apt update
 ENV DEBIAN_FRONTEND noninteractive
