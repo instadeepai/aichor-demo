@@ -15,6 +15,6 @@ dependencies = [
     "python-slugify==8.0.4",
     "s3fs==2025.3.0",
     "tensorboardX==2.6.4",
-    "torch==2.8.0",
-    "transformers==4.55.2",
+    "torch==2.11.0",
+    "transformers==5.0.0rc3",
 ]
